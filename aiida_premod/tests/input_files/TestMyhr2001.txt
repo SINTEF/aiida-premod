@@ -1,0 +1,14 @@
+MODE_SIM=PPT
+MODE_ENTITY=SD
+MODE_SD=EULERIAN
+FILE_OUT_PPT=TestMyhr2001.out
+OUTPUT_TIMES=  5
+     1800.00      3600.00     14400.00     61200.00    277200.00
+MODE_IO=TXT
+FILE_SOLVER=solver.txt
+FILE_ALLOY=alloyIV_Myhr2001.txt
+FILE_PROCESS=temperature_458K.txt                                                                                                                                                                                                                                                                         
+FILE_PHASES=phasesLib.txt
+FILE_PPTLIB=pptmodels.txt
+FILE_PPTSIM=MG5SI6_B_DP_MYHR2001.txt
+#ALPHA_PHASE=1
