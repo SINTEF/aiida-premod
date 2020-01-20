@@ -7,48 +7,39 @@ Usage: verdi run submit.py
 from __future__ import absolute_import
 from __future__ import print_function
 import os
-from aiida.orm import Code, Dict
+from aiida.orm import Code
 from aiida.common.extendeddicts import AttributeDict
 from aiida.plugins import DataFactory, CalculationFactory
 from aiida.engine import run
 from aiida import load_profile
 load_profile()
 
-from aiida_premod.tests import TEST_DIR
+from aiida_premod.tests import TEST_DIR  # pylint: disable=wrong-import-position
 
 # get code
 code_string = 'premod@localhost'
 code = Code.get_from_string(code_string)
 
-# Prepare input parameters
-#DiffParameters = DataFactory('premod')
-#parameters = DiffParameters({'ignore-case': True})
-
-# Name of calculation
-name = 'mypremodcalc'
-
 # Set input parameters
 parameters = AttributeDict()
-parameters.MODE_SIM='PPT'
-parameters.MODE_ENTITY='SD'
-parameters.MODE_SD='EULERIAN'
-parameters.FILE_OUT_PPT=name+'.out'
-parameters.OUTPUT_TIMES=[1800.00, 3600.00, 14400.00, 61200.00, 277200.00]
-parameters.MODE_IO='TXT'
-parameters.FILE_SOLVER='solver.txt'
-parameters.FILE_ALLOY='alloy.txt'
-parameters.FILE_PROCESS='temperature.txt'
-parameters.FILE_PHASES='libphases.txt'
-parameters.FILE_PPTLIB='models.txt'
-parameters.FILE_PPTSIM='libmodel.txt'
+parameters.MODE_SIM = 'PPT'
+parameters.MODE_ENTITY = 'SD'
+parameters.MODE_SD = 'EULERIAN'
+parameters.FILE_OUT_PPT = 'PreModRun.out'
+parameters.OUTPUT_TIMES = [1800.00, 3600.00, 14400.00, 61200.00, 277200.00]
+parameters.MODE_IO = 'TXT'
+parameters.FILE_SOLVER = 'solver.txt'
+parameters.FILE_ALLOY = 'alloy.txt'
+parameters.FILE_PROCESS = 'temperature.txt'
+parameters.FILE_PHASES = 'libphases.txt'
+parameters.FILE_PPTLIB = 'models.txt'
+parameters.FILE_PPTSIM = 'libmodel.txt'
 #paramters.ALPHA_PHASE=1
-
 
 # Fetch the single file AiiDA data structure
 SinglefileData = DataFactory('singlefile')
 
-alloy = SinglefileData(
-    file=os.path.join(TEST_DIR, 'input_files', 'alloy.txt'))
+alloy = SinglefileData(file=os.path.join(TEST_DIR, 'input_files', 'alloy.txt'))
 solver = SinglefileData(
     file=os.path.join(TEST_DIR, 'input_files', 'solver.txt'))
 temperature = SinglefileData(
@@ -72,7 +63,7 @@ inputs = {
     'libmodel': libmodel,
     'metadata': {
         'description': "Test job submission with the aiida_premod plugin",
-        'label': name
+        'label': 'This is a sample calculation'
     },
 }
 
@@ -80,6 +71,3 @@ inputs = {
 # from aiida.engine import submit
 # future = submit(CalculationFactory('premod'), **inputs)
 result = run(CalculationFactory('premod'), **inputs)
-print(result)
-#computed_diff = result['premod'].get_content()
-#print("Computed diff between files: \n{}".format(computed_diff))

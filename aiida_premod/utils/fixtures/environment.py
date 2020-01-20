@@ -11,12 +11,12 @@ testing. AiiDA contributes with its own fixture manager, which we use.
 from __future__ import absolute_import
 from __future__ import print_function
 import pytest
-from py import path as py_path  # pylint: disable=no-member,no-name-in-module
 
 
 @pytest.fixture()
 def fresh_aiida_env(aiida_profile):
     """Reset the database before and after the test function."""
-    print('The root directory of the fixture manager is: {}'.format(aiida_profile._manager.root_dir))  # pylint: disable=protected-access
+    print('The root directory of the fixture manager is: {}'.format(
+        aiida_profile._manager.root_dir))  # pylint: disable=protected-access
     yield aiida_profile
     aiida_profile.reset_db()

@@ -6,13 +6,15 @@ Register parsers via the "aiida.parsers" entry point in setup.json.
 """
 from __future__ import absolute_import
 
-from aiida.common.extendeddicts import AttributeDict
 from aiida.common import exceptions
 from aiida.engine import ExitCode
 from aiida.parsers.parser import Parser
-from aiida.plugins import CalculationFactory, DataFactory
+from aiida.plugins import CalculationFactory
 
 from aiida_premod.parsers.file_parsers.summary import SummaryParser
+from aiida_premod.parsers.file_parsers.micro import MicroParser
+from aiida_premod.parsers.file_parsers.log import LogParser
+
 
 class PreModParser(Parser):
     """
@@ -27,7 +29,6 @@ class PreModParser(Parser):
         :param node: ProcessNode of calculation
         :param type node: :class:`aiida.orm.ProcessNode`
         """
-        from aiida.common import exceptions
         super(PreModParser, self).__init__(node)
         if not issubclass(node.process_class, CalculationFactory('premod')):
             raise exceptions.ParsingError("Can only parse PreModCalculation")
@@ -38,14 +39,13 @@ class PreModParser(Parser):
 
         :returns: an exit code, if parsing fails (or nothing if parsing succeeds)
         """
-        from aiida.orm import SinglefileData
 
         # Check if retrieved folder is present
         try:
             output_folder = self.retrieved
         except exceptions.NotExistent:
             return self.exit_codes.ERROR_NO_RETRIEVED_FOLDE
-        
+
         # Check that folder content is as expected
         files_retrieved = output_folder.list_object_names()
         files_expected = ['PreModRun', 'PreModRun.log']
@@ -55,6 +55,13 @@ class PreModParser(Parser):
                 files_retrieved, files_expected))
             return self.exit_codes.ERROR_MISSING_OUTPUT_FILES
         summary_parser = SummaryParser(self)
-        summary_parser.parse()
+        summary = summary_parser.parse()
+        self.out('summary', summary['summary'])
+        log_parser = LogParser(self)
+        log = log_parser.parse()
+        self.out('log', log['log'])
+        micro_parser = MicroParser(self)
+        micro = micro_parser.parse()
+        self.out('micro', micro['micro'])
 
         return ExitCode(0)

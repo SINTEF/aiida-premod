@@ -23,7 +23,7 @@ class TestDataCli(PluginTestCase):
 
         Tests that it can be reached and that it lists the node we have set up.
         """
-        from aiida_premod.cli import list_
+        from aiida_premod.commands.cli import list_
 
         result = self.runner.invoke(list_, catch_exceptions=False)
         self.assertIn(str(self.parameters.pk), result.output)
@@ -34,7 +34,7 @@ class TestDataCli(PluginTestCase):
         Tests that it can be reached and that it shows the contents of the node
         we have set up.
         """
-        from aiida_premod.cli import export
+        from aiida_premod.commands.cli import export
 
         result = self.runner.invoke(export, [str(self.parameters.pk)],
                                     catch_exceptions=False)

@@ -1,5 +1,7 @@
+from __future__ import absolute_import
 from aiida.plugins import DataFactory
 from aiida.common.extendeddicts import AttributeDict
+
 
 class ParameterParser():
     """
@@ -22,8 +24,7 @@ class ParameterParser():
             handler.write('MODE_ENTITY=' + data.MODE_ENTITY + '\n')
             handler.write('MODE_SD=' + data.MODE_SD + '\n')
             handler.write('FILE_OUT_PPT=' + data.FILE_OUT_PPT + '\n')
-            handler.write('OUTPUT_TIMES=' + str(len(data.OUTPUT_TIMES)) +
-                          '\n')
+            handler.write('OUTPUT_TIMES=' + str(len(data.OUTPUT_TIMES)) + '\n')
             # Loop over the output times
             for time in data.OUTPUT_TIMES:
                 handler.write(str(time) + ' ')
@@ -36,5 +37,3 @@ class ParameterParser():
             handler.write('FILE_PHASES=' + data.FILE_PHASES + '\n')
             handler.write('FILE_PPTLIB=' + data.FILE_PPTLIB + '\n')
             handler.write('FILE_PPTSIM=' + data.FILE_PPTSIM + '\n')
-
-        return
