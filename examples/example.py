@@ -7,9 +7,14 @@ Usage: verdi run submit.py
 from __future__ import absolute_import
 from __future__ import print_function
 import os
-from aiida.orm import Code
+from aiida.orm import Code, Dict
+from aiida.common.extendeddicts import AttributeDict
 from aiida.plugins import DataFactory, CalculationFactory
 from aiida.engine import run
+from aiida import load_profile
+load_profile()
+
+from aiida_premod.tests import TEST_DIR
 
 # get code
 code_string = 'premod@localhost'
@@ -23,7 +28,7 @@ code = Code.get_from_string(code_string)
 name = 'mypremodcalc'
 
 # Set input parameters
-parameters = DataFactory('dict')
+parameters = AttributeDict()
 parameters.MODE_SIM='PPT'
 parameters.MODE_ENTITY='SD'
 parameters.MODE_SD='EULERIAN'
@@ -43,23 +48,22 @@ parameters.FILE_PPTSIM='libmodel.txt'
 SinglefileData = DataFactory('singlefile')
 
 alloy = SinglefileData(
-    file=os.path.join(tests.TEST_DIR, 'input_files', 'alloy.txt'))
+    file=os.path.join(TEST_DIR, 'input_files', 'alloy.txt'))
 solver = SinglefileData(
-    file=os.path.join(tests.TEST_DIR, 'input_files', 'solver.txt'))
+    file=os.path.join(TEST_DIR, 'input_files', 'solver.txt'))
 temperature = SinglefileData(
-    file=os.path.join(tests.TEST_DIR, 'input_files', 'temperature.txt'))
+    file=os.path.join(TEST_DIR, 'input_files', 'temperature.txt'))
 models = SinglefileData(
-    file=os.path.join(tests.TEST_DIR, 'input_files', 'models.txt'))
+    file=os.path.join(TEST_DIR, 'input_files', 'models.txt'))
 libphases = SinglefileData(
-    file=os.path.join(tests.TEST_DIR, 'input_files', 'libphases.txt'))
+    file=os.path.join(TEST_DIR, 'input_files', 'libphases.txt'))
 libmodel = SinglefileData(
-    file=os.path.join(tests.TEST_DIR, 'input_files', 'libmodel.txt'))
-
+    file=os.path.join(TEST_DIR, 'input_files', 'libmodel.txt'))
 
 # set up calculation
 inputs = {
     'code': code,
-    'parameters': parameters,
+    'parameters': DataFactory('dict')(dict=parameters),
     'alloy': alloy,
     'solver': solver,
     'temperature': temperature,
@@ -68,7 +72,7 @@ inputs = {
     'libmodel': libmodel,
     'metadata': {
         'description': "Test job submission with the aiida_premod plugin",
-        'label': name,
+        'label': name
     },
 }
 
@@ -76,6 +80,6 @@ inputs = {
 # from aiida.engine import submit
 # future = submit(CalculationFactory('premod'), **inputs)
 result = run(CalculationFactory('premod'), **inputs)
-
-computed_diff = result['premod'].get_content()
-print("Computed diff between files: \n{}".format(computed_diff))
+print(result)
+#computed_diff = result['premod'].get_content()
+#print("Computed diff between files: \n{}".format(computed_diff))

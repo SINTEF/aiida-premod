@@ -18,13 +18,13 @@
             "premod = aiida_premod.data:DiffParameters"
         ],
         "aiida.calculations": [
-            "premod = aiida_premod.calculations:DiffCalculation"
+            "premod = aiida_premod.calculations.premod:PreModCalculation"
         ],
         "aiida.parsers": [
-            "premod = aiida_premod.parsers:DiffParser"
+            "premod = aiida_premod.parsers.premod:PreModParser"
         ],
         "aiida.cmdline.data": [
-            "premod = aiida_premod.cli:data_cli"
+            "premod = aiida_premod.commands.cli:data_cli"
         ]
     },
     "include_package_data": true,

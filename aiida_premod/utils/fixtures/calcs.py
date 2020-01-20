@@ -12,8 +12,17 @@ from aiida.engine.utils import instantiate_process
 from aiida.orm import Code
 from aiida.common.extendeddicts import AttributeDict
 from aiida.manage.manager import get_manager
+# houses aiida_local_code_factory among others
+pytest_plugins = ['aiida.manage.tests.pytest_fixtures']
 
 from aiida_premod.utils.fixtures.computers import localhost
+
+@pytest.fixture(scope='function')
+def premod_code(aiida_local_code_factory):
+    """Get the premod code.
+    """
+    premod_code = aiida_local_code_factory(executable='premod', entry_point='premod')
+    return premod_code
 
 @pytest.fixture()
 def calc_with_retrieved(localhost):

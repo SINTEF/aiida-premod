@@ -1,7 +1,7 @@
 """
-Calculations provided by aiida_premod.
+Base calculations provided by aiida_premod.
 
-Register calculations via the "aiida.calculations" entry point in setup.json.
+Register calculations via the "aiida.base" entry point in setup.json.
 """
 from __future__ import absolute_import
 
@@ -9,10 +9,10 @@ import six
 
 from aiida.common import datastructures
 from aiida.engine import CalcJob
-from aiida.orm import SinglefileData
+from aiida.orm import SinglefileData, Bool, Dict
 from aiida.plugins import DataFactory
 
-from aiida_premod.parsers import ParameterParser
+from aiida_premod.parsers.file_parsers.parameter import ParameterParser
 
 
 class PreModCalculation(CalcJob):
@@ -28,7 +28,7 @@ class PreModCalculation(CalcJob):
         super(PreModCalculation, cls).define(spec)
         spec.input('metadata.options.resources', valid_type=dict, default={'num_machines': 1, 'num_mpiprocs_per_machine': 1})
         spec.input('metadata.options.parser_name', valid_type=six.string_types, default='premod')
-        spec.input('metadata.options.withmpi', valid_type=Bool, default=False)
+        spec.input('metadata.options.withmpi', valid_type=bool, default=False)
         spec.input('parameters', valid_type=Dict, help='Parameters for premod')
         spec.input('alloy', valid_type=SinglefileData, help='Alloy description.')
         spec.input('solver', valid_type=SinglefileData, help='Second file to be compared.')
@@ -54,9 +54,11 @@ class PreModCalculation(CalcJob):
             the calculation.
         :return: `aiida.common.datastructures.CalcInfo` instance
         """
+
         codeinfo = datastructures.CodeInfo()
         codeinfo.code_uuid = self.inputs.code.uuid
         codeinfo.withmpi = self.inputs.metadata.options.withmpi
+        codeinfo.cmdline_params = ['PreModRun.txt']
 
         # Prepare a `CalcInfo` to be returned to the engine
         calcinfo = datastructures.CalcInfo()
@@ -69,10 +71,10 @@ class PreModCalculation(CalcJob):
             (self.inputs.libphases.uuid, self.inputs.libphases.filename, self.inputs.libphases.filename),
             (self.inputs.libmodel.uuid, self.inputs.libmodel.filename, self.inputs.libmodel.filename),
         ]
-        calcinfo.retrieve_list = ['PremodRun','PremodRun.log']
+        calcinfo.retrieve_list = ['PreModRun','PreModRun.log']
 
         # write input file
         parameter_parser = ParameterParser(data=self.inputs.parameters)
-        parameter_parser.write(folder.get_abs_path('PremodRun.txt'))
+        parameter_parser.write(folder.get_abs_path('PreModRun.txt'))
 
         return calcinfo

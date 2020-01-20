@@ -8,19 +8,19 @@ import os
 
 from aiida.orm import Code
 from aiida_premod import tests
-from aiida_premod.utils.fixtures.calcs import calc_with_retrieved
+from aiida_premod.utils.fixtures.calcs import premod_code
+from aiida_premod.utils.fixtures.computers import localhost, localhost_dir
+from aiida_premod.utils.fixtures.environment import fresh_aiida_env
 
-def test_process(premod_code, calc_with_retrieved):
+def test_process(premod_code):
     """Test running a calculation
     note this does not test that the expected outputs are created of output parsing"""
     from aiida.plugins import DataFactory, CalculationFactory
     from aiida.engine import run
 
-    code = calc_with_retrieved(file_path=os.path.join(tests.TEST_DIR, 'output_files'))
-    
     # Name of calculation
     name = 'mypremodcalc'
-    
+
     # Set input parameters
     parameters = DataFactory('dict')
     parameters.MODE_SIM='PPT'
@@ -53,10 +53,10 @@ def test_process(premod_code, calc_with_retrieved):
         file=os.path.join(tests.TEST_DIR, 'input_files', 'libphases.txt'))
     libmodel = SinglefileData(
         file=os.path.join(tests.TEST_DIR, 'input_files', 'libmodel.txt'))
-    
+
     # set up calculation
     inputs = {
-        'code': code,
+        'code': premod_code,
         'parameters': parameters,
         'alloy': alloy,
         'solver': solver,
@@ -69,3 +69,5 @@ def test_process(premod_code, calc_with_retrieved):
             'label': name,
         },
     }
+    print(inputs['parameters'])
+    result = run(CalculationFactory('premod'), **inputs)
