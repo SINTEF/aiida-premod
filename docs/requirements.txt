@@ -1,0 +1,2 @@
+aiida-core[atomic_tools]>=1.0.1
+-e git+https://github.com/sintef/aiida-premod.git@master#egg=aiida-premod
