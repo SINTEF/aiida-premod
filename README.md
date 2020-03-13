@@ -50,6 +50,8 @@ see the [developer guide](https://aiida-diff.readthedocs.io/en/latest/developer_
 
 ## Installation
 
+**Installation not yet in place**
+
 ```shell
 pip install aiida-premod
 verdi quicksetup  # better to set up a new profile
@@ -78,7 +80,7 @@ verdi data premod export <PK>
 ## Development
 
 ```shell
-git clone https://github.com/espenfl/aiida-premod .
+git clone https://github.com/sintef/aiida-premod .
 cd aiida-premod
 pip install -e .[pre-commit,testing]  # install extra dependencies
 pre-commit install  # install pre-commit hooks
